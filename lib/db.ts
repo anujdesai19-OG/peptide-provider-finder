@@ -1,19 +1,27 @@
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import ws from 'ws';
+import { neon } from '@neondatabase/serverless';
 
-// WebSocket is required for Pool in Node.js serverless environments
-neonConfig.webSocketConstructor = ws;
+// HTTP-based neon() avoids the WebSocket/ws compatibility issues on Vercel.
+// All callers use the same pool.query(sql, params) interface via this wrapper.
+let _sql: ReturnType<typeof neon> | null = null;
 
-let _pool: Pool | null = null;
-
-export function getPool(): Pool {
-  if (!_pool) {
+function getSql() {
+  if (!_sql) {
     if (!process.env.DATABASE_URL) {
       throw new Error('DATABASE_URL environment variable is not set');
     }
-    _pool = new Pool({ connectionString: process.env.DATABASE_URL });
+    _sql = neon(process.env.DATABASE_URL);
   }
-  return _pool;
+  return _sql;
+}
+
+export function getPool() {
+  return {
+    query: async (text: string, values?: unknown[]) => {
+      const sql = getSql();
+      const rows = await sql(text, values ?? []);
+      return { rows };
+    },
+  };
 }
 
 // Module-level promise ensures init runs once per Lambda instance
@@ -149,7 +157,7 @@ async function _init(): Promise<void> {
 
   // Seed only if empty
   const { rows } = await pool.query('SELECT COUNT(*) as c FROM admin_users');
-  if (parseInt(rows[0].c) > 0) return;
+  if (parseInt((rows[0] as { c: string }).c) > 0) return;
 
   await pool.query(
     `INSERT INTO admin_users (email, password_hash, role) VALUES ($1, $2, $3)`,
