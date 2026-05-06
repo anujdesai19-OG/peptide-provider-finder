@@ -18,11 +18,8 @@ export function getPool() {
   return {
     query: async (text: string, values?: unknown[]): Promise<{ rows: any[] }> => {
       const sql = getSql();
-      // neon() supports programmatic sql(text, params) at runtime;
-      // cast bypasses the TemplateStringsArray-only type definition in v1.x
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = await (sql as any)(text, values ?? []);
-      return { rows: result };
+      const result = await sql.query(text, values ?? []);
+      return { rows: result as any[] };
     },
   };
 }
