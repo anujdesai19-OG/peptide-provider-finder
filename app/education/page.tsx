@@ -162,7 +162,7 @@ export default function EducationPage() {
       <div className="text-center">
         <p className="text-gray-600 mb-4">Ready to find a verified provider to discuss your goals?</p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link href="/quiz" className="btn-primary">Take the Safety Quiz</Link>
+          <Link href="/quiz" className="btn-primary">Take the Peptide Survey</Link>
           <Link href="/providers" className="btn-secondary">Browse Providers</Link>
         </div>
       </div>

@@ -38,7 +38,7 @@ export default async function HomePage() {
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/quiz" className="btn-primary bg-white text-brand-700 hover:bg-brand-50 text-base px-8 py-3">
-              Take the Safety Quiz
+              Take the Peptide Survey
             </Link>
             <Link href="/providers" className="btn-ghost text-base px-8 py-3">
               Browse Providers
@@ -75,7 +75,7 @@ export default async function HomePage() {
               {
                 step: '01',
                 icon: '📋',
-                title: 'Take the Safety Quiz',
+                title: 'Take the Peptide Survey',
                 desc: 'Answer a few questions about your goals, health history, and location. Get safe educational guidance tailored to your situation.',
               },
               {
